@@ -79,6 +79,7 @@ int main(void)
     glBindTexture(GL_TEXTURE_2D, textureobj);
 
     Texture texture("textures/spinner.png", linearFiltering, GL_RGBA, &textureobj);
+    float spinnerWidth = 0.9f;
 
     myShader.UseProgram();
     myShader.SetUniformInt("myTexture", 0);
@@ -86,11 +87,17 @@ int main(void)
     glEnable(GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glm::vec3 spinnerPosition(0.0f, 0.0f, 0.0f);
+    float rotationDirection = -1.0f;
+    float rotationSpeed = 2.0f;
+    std::map<int, bool> keyPressedTracker = {{GLFW_KEY_SPACE, false}};
+
     while (!glfwWindowShouldClose(window))
     {
+        ProcessInput(window, &myShader, spinnerPosition, spinnerWidth / 2.0f, rotationDirection, keyPressedTracker);
         glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        trans = glm::translate(trans, spinnerPosition);
+        trans = glm::rotate(trans, (float)glfwGetTime() * rotationSpeed, glm::vec3(0.0f, 0.0f, rotationDirection));
         myShader.SetUniformMat4("transform", trans);
 
         glClearColor (0.1f, 0.1f, 0.1f, 1.0f);

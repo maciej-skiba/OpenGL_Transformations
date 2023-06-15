@@ -44,3 +44,40 @@ void Texture::ReloadTexture(bool linFiltering)
     linearFiltering = linFiltering;
     SetupTexture(_path, _width, _height, _nrChannels, _colorType, linearFiltering);
 }
+
+void ProcessInput
+    (GLFWwindow *window, Shader* shader, glm::vec3 &spinnerPosition,
+    float spinnerWidth, float &rotationDirection, std::map<int, bool> &keyPressedTrackingMap)
+{
+    float movementSpeed = 0.02f;
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && spinnerPosition.y < 1.0f - spinnerWidth)
+    {
+        spinnerPosition.y += movementSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && spinnerPosition.y > -1.0f + spinnerWidth)
+    {
+        spinnerPosition.y -= movementSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && spinnerPosition.x < 1.0f - spinnerWidth)
+    {
+        spinnerPosition.x += movementSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && spinnerPosition.x > -1.0f + spinnerWidth)
+    {
+        spinnerPosition.x -= movementSpeed;
+    }
+
+    // change rotation direction to opposite with GetKeyDown
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        if (keyPressedTrackingMap[GLFW_KEY_SPACE] == false)
+        {
+            rotationDirection *= -1.0f;
+            keyPressedTrackingMap[GLFW_KEY_SPACE] = true;
+        }
+    }
+    else (keyPressedTrackingMap[GLFW_KEY_SPACE] = false);
+
+    //std::cout << "x: " << spinnerPosition.x << " y: " << spinnerPosition.y << std::endl;
+}
